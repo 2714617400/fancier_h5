@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page">
     <Cell :title="chapter.title" center />
     <div class="content" v-html="chapter.content"></div>
   </div>
@@ -33,8 +33,19 @@ getContent();
 </script>
 
 <style lang="scss" scope>
+.page {
+  background-color: #E9FAFF;
+}
 .content {
   white-space: pre-line;
-  padding: 0 14px;
+  padding: 14px;
+
+  font-family: "MicrosoftYaHei", "Lucida Grande", Helvetica, Arial, "SimSun",
+    FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB",
+    "Hiragino Sans GB W3", FontAwesome, sans-serif;
+  font-weight: 400;
+  color: #333;
+  font-size: 12px;
+  -webkit-font-smoothing: subpixel-antialiased;
 }
 </style>
