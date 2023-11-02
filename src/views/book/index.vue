@@ -49,7 +49,7 @@ function onBarClick(item) {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  gap: 10px 5px;
+  gap: 10px 8px;
   margin: 0 auto;
 
   background-color: hsl(34, 53%, 82%);
@@ -107,11 +107,10 @@ function onBarClick(item) {
     );
 
   .book {
-    width: 100px;
-    height: 150px;
-    // border: 1px solid #ddd;
-    padding: 5px;
-    // background-color: #fff;
+    width: 110px;
+    height: 156px;
+    box-sizing: border-box;
+    // border: 1px solid gold;
     writing-mode: vertical-rl; /*从左向右 从右向左是 writing-mode: vertical-rl;*/
 
     display: flex;
@@ -122,11 +121,7 @@ function onBarClick(item) {
     &:hover {
       --i: -1;
     }
-    // .title {
-    //   font-size: 12px;
-    // }
 
-    // border-radius: 10px;
     backdrop-filter: blur(5px);
     background-color: rgba(238, 232, 170, 0.0175);
     // box-shadow: rgba(0, 0, 0, 0.3) 2px 8px 8px;
@@ -134,8 +129,9 @@ function onBarClick(item) {
     border-bottom: 2px rgba(40, 40, 40, 0.35) solid;
     border-right: 2px rgba(40, 40, 40, 0.35) solid;
 
-    background-image: url("~@/assets/logo.svg");
-    background-size: 100px 141.967px;
+    background-image: url("@/assets/book.svg");
+    background-size: 130px auto;
+    background-position: center;
 
     /* 加上 -webkit- 注意兼容 */
     .title {
