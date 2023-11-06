@@ -1,19 +1,16 @@
 <template>
   <div class="stack">
-    <!-- <img src="@/assets/book.svg" /> -->
     <div class="book" v-for="(v, i) in books" :key="i" @click="onClick(v)">
       <div>
         <p class="van-ellipsis title">{{ v.title }}</p>
       </div>
     </div>
-    <!-- <div v-for="(v, i) in books" :key="i" class="box" @click="onClick(v)"></div> -->
   </div>
 </template>
 
 <script setup name="Msg">
 import { reactive, ref } from "vue";
 import { Dialog, Image } from "vant";
-import MsgList from "@/components/MsgList/index.vue";
 import { getStory } from "@/api/book/index.js";
 
 import { useRouter } from "vue-router";
@@ -170,22 +167,6 @@ function onBarClick(item) {
 
     .title:hover {
       -webkit-animation: flowCss 4s infinite linear;
-    }
-  }
-  .box {
-    width: 50%;
-    display: flex;
-    justify-content: center;
-    @keyframes glowing {
-      0% {
-        background-position: 0 0;
-      }
-      50% {
-        background-position: 400% 0;
-      }
-      100% {
-        background-position: 0 0;
-      }
     }
   }
 }
