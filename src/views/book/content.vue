@@ -34,7 +34,7 @@ getContent();
 
 <style lang="scss" scope>
 .page {
-  background-color: #E9FAFF;
+  background-color: #e9faff;
 }
 .content {
   white-space: pre-line;

@@ -23,7 +23,7 @@
 
 <script setup name="List">
 import { ref, computed } from "vue";
-import { List, Cell } from "vant";
+import { List, Cell, Sticky, Row, Col } from "vant";
 import { getChapter } from "@/api/book/index.js";
 import { useRouter, useRoute } from "vue-router";
 const route = useRoute(),

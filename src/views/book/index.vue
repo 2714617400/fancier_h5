@@ -11,10 +11,12 @@
 <script setup name="Msg">
 import { reactive, ref } from "vue";
 import { Dialog, Image } from "vant";
+import { useBookStore } from "@/stores/book";
 import { getStory } from "@/api/book/index.js";
 
 import { useRouter } from "vue-router";
 const router = useRouter();
+const bookStores = useBookStore();
 
 const books = ref([]);
 
@@ -25,6 +27,14 @@ getStory().then((res) => {
 
 function onClick(item) {
   console.log(item, "item");
+  // bookStores.$patch({
+  //   bookId: item.id,
+  //   bookName: item.title,
+  // });
+  // bookStores.GetChapters(item.id).then(() => {
+  //   console.log("segment: ", bookStores.GetSegment);
+  // });
+  // return;
   router.push({ name: "list", params: { id: item.id } });
 }
 
