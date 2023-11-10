@@ -49,9 +49,12 @@ export const useBookStore = defineStore({
     },
   },
   actions: {
-    GetChapters: function (id) {
-      if (!id && !this.bookId) return Toast("请选择故事!");
+    GetChapters: function (id = "") {
       return new Promise((resolve, reject) => {
+        if (!id && !this.bookId) {
+          reject();
+          return Toast("请选择故事!");
+        }
         getChapter({ id: id || this.bookId, page: 1, per_page: 9999 })
           .then(({ data }) => {
             console.log("???0", data);
@@ -64,9 +67,11 @@ export const useBookStore = defineStore({
       });
     },
     GetContent: function (child_id) {
-      if (!this.bookId) return Toast("请选择故事!");
-      else if (!child_id) return Toast("请选择故事章节!");
       return new Promise((resolve, reject) => {
+        if (!this.bookId || !child_id) {
+          reject();
+          return Toast(!this.bookId ? "请选择故事!" : "请选择故事章节!");
+        }
         getChapterContent({ id: this.bookId, child_id })
           .then(({ data }) => {
             let content = data.content.split("\n").join("<br /><br />");
@@ -78,8 +83,10 @@ export const useBookStore = defineStore({
       });
     },
     GetNextContent: function () {
-      if (this.current.index >= this.chapters.length)
-        return Toast("当前是最终章!");
+      if (this.current.index >= this.chapters.length) {
+        Toast("当前是最终章!");
+        return Promise.reject();
+      }
       this.current.index++;
       this.current.id = this.chapters[this.current.index].id;
       this.current.title = this.chapters[this.current.index].title;

@@ -27,10 +27,10 @@ getStory().then((res) => {
 
 function onClick(item) {
   console.log(item, "item");
-  // bookStores.$patch({
-  //   bookId: item.id,
-  //   bookName: item.title,
-  // });
+  bookStores.$patch({
+    bookId: item.id,
+    bookName: item.title,
+  });
   // bookStores.GetChapters(item.id).then(() => {
   //   console.log("segment: ", bookStores.GetSegment);
   // });
