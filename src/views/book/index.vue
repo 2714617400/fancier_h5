@@ -12,30 +12,22 @@
 import { reactive, ref } from "vue";
 import { Dialog, Image } from "vant";
 import { useBookStore } from "@/stores/book";
-import { getStory } from "@/api/book/index.js";
-
 import { useRouter } from "vue-router";
 const router = useRouter();
 const bookStores = useBookStore();
 
 const books = ref([]);
 
-getStory().then((res) => {
-  console.log("数据", res);
-  books.value = res;
+bookStores.GetBooks().then((data) => {
+  books.value = data;
 });
 
 function onClick(item) {
   console.log(item, "item");
   bookStores.$patch({
-    bookId: item.id,
-    bookName: item.title,
+    readBookId: item.id,
   });
-  // bookStores.GetChapters(item.id).then(() => {
-  //   console.log("segment: ", bookStores.GetSegment);
-  // });
-  // return;
-  router.push({ name: "list", params: { id: item.id } });
+  router.push({ name: "list" });
 }
 
 function onMsgClick(item) {

@@ -1,18 +1,14 @@
 import { defineStore } from "pinia";
-import { getChapter, getChapterContent } from "@/api/book/index.js";
+import { getStory, getChapter, getChapterContent } from "@/api/book/index.js";
 import { Toast } from "vant";
 
 export const useBookStore = defineStore({
   id: "book",
   state: () => ({
-    bookId: null,
-    bookName: null,
+    books: [],
     chapters: [],
-    current: {
-      id: null,
-      index: null,
-      title: null,
-    },
+    readBookId: null,
+    readChapterID: null,
   }),
   getters: {
     GetSegment() {
@@ -45,19 +41,45 @@ export const useBookStore = defineStore({
     },
     GetSegmentChapters(state) {
       // 分页章节
-      return (start, end) => state.chapters.slice(start, end);
+      return (data) => state.chapters.slice(data.start, data.end);
     },
   },
   actions: {
-    GetChapters: function (id = "") {
+    /**
+     * 获取故事列表
+     * @returns {Array} 故事列表
+     */
+    GetBooks: function () {
       return new Promise((resolve, reject) => {
-        if (!id && !this.bookId) {
+        getStory()
+          .then((res) => {
+            this.books = res;
+            resolve(res);
+          })
+          .catch((error) => {
+            reject(error);
+          });
+      });
+    },
+    /**
+     * 获取章节列表,默认拉取全部章节
+     * @param {string} [book_id] 故事ID,不传则默认当前故事
+     * @returns {Array} 章节列表
+     */
+    GetChapters: function (book_id = "") {
+      return new Promise((resolve, reject) => {
+        if (!book_id && !this.readBookId) {
           reject();
-          return Toast("请选择故事!");
+          return Toast("请选择要阅读的故事!");
         }
-        getChapter({ id: id || this.bookId, page: 1, per_page: 9999 })
+        let params = {
+          id: book_id || this.readBookId,
+          page: 1,
+          per_page: 9999,
+        };
+        getChapter(params)
           .then(({ data }) => {
-            console.log("???0", data);
+            console.log(data, "c");
             this.chapters = data.list;
             resolve(data.list);
           })
@@ -66,31 +88,55 @@ export const useBookStore = defineStore({
           });
       });
     },
+    /**
+     * 获取章节内容
+     * @param {string} child_id 章节ID
+     * @returns {string} 章节内容
+     */
     GetContent: function (child_id) {
       return new Promise((resolve, reject) => {
-        if (!this.bookId || !child_id) {
+        if (!this.readBookId || !child_id) {
           reject();
-          return Toast(!this.bookId ? "请选择故事!" : "请选择故事章节!");
+          return Toast(!this.readBookId ? "请选择故事!" : "请选择故事章节!");
         }
-        getChapterContent({ id: this.bookId, child_id })
+        let params = {
+          id: this.readBookId,
+          child_id,
+        };
+        getChapterContent(params)
           .then(({ data }) => {
-            let content = data.content.split("\n").join("<br /><br />");
-            resolve(content);
+            // let content = data.content.split("\n").join("<br /><br />");
+            // console.log(data, content, "sssssss");
+            resolve(data);
+            this.readChapterID = child_id;
           })
           .catch((error) => {
             reject(error);
           });
       });
     },
+    /**
+     * 获取下一章内容
+     * @returns {string} 章节内容
+     */
     GetNextContent: function () {
-      if (this.current.index >= this.chapters.length) {
-        Toast("当前是最终章!");
+      if (!this.readBookId || !this.readChapterID) {
+        Toast(!this.readBookId ? "请选择故事!" : "请选择故事章节!");
         return Promise.reject();
       }
-      this.current.index++;
-      this.current.id = this.chapters[this.current.index].id;
-      this.current.title = this.chapters[this.current.index].title;
-      return this.GetContent(this.current.id);
+      if (this.chapters.length === 0) {
+        Toast("章节列表是空的!");
+        return Promise.reject();
+      }
+      let index = this.chapters.findIndex((v) => v.id === this.readChapterID);
+      if (index === -1 || index === this.chapters.length - 1) {
+        Toast(index === -1 ? "未找到下一章!" : "终章!");
+        return Promise.reject();
+      }
+      index++;
+      let nextId = this.chapters[index].id;
+
+      return this.GetContent(nextId);
     },
   },
 });

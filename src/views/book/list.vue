@@ -8,69 +8,54 @@
         :to="{
           name: 'content',
           params: {
-            id: bookId,
             child_id: item.id,
           },
         }"
       />
     </List>
   </div>
-  <div class="segment" @click="openSeg">选择分页</div>
+  <div class="segment" @click="open">章节目录</div>
   <Popup
-    :show="showSeg"
+    :show="show"
     position="bottom"
     close-on-click-overlay
-    @close="closeSeg"
-    @click-overlay="closeSeg"
-    class="seg-popup"
+    @close="close"
+    @click-overlay="close"
   >
-    <Collapse v-model="collaActive" accordion @change="onChangeColla">
-      <CollapseItem
-        :title="item.title"
-        :name="i"
-        v-for="(item, i) in segList"
-        :key="i"
-      >
-        <List class="chapters">
-          <Cell v-for="(c, p) in demo" :key="p" :title="c.title" />
-        </List>
-      </CollapseItem>
-    </Collapse>
+    <Picker
+      :columns="segList"
+      value-key="title"
+      @cancel="close"
+      @confirm="onConfirm"
+    />
   </Popup>
 </template>
 
 <script setup name="List">
 import { ref, unref, computed } from "vue";
-import { List, Cell, Toast, Collapse, CollapseItem, Popup } from "vant";
+import { List, Cell, Toast, Popup, Picker } from "vant";
 import { useBookStore } from "@/stores/book";
 
 const bookStore = useBookStore(),
   list = ref([]);
-console.log(bookStore);
 bookStore.GetChapters().then((data) => {
   list.value = data;
-  demo.value = bookStore.GetSegmentChapters(unref(segList).start, item.end);
+  data.length &&
+    (demo.value = bookStore.GetSegmentChapters(bookStore.GetSegment[0]));
 });
-const bookId = computed(() => bookStore.bookId);
 const segList = computed(() => bookStore.GetSegment);
 
-const showSeg = ref(false),
-  collaActive = ref(""),
+const show = ref(false),
   demo = ref([]);
-function openSeg() {
-  showSeg.value = true;
-  console.log(showSeg.value, "lalala");
+function open() {
+  show.value = true;
 }
-function closeSeg() {
-  showSeg.value = false;
+function close() {
+  show.value = false;
 }
-function onChangeColla(index) {
-  if (index !== 0 && !index) return;
-  console.log(index, "index");
-  let item = unref(segList)[index];
-  console.log(item, "item");
-  demo.value = bookStore.GetSegmentChapters(item.start, item.end);
-  console.log(demo, "demo");
+function onConfirm(e) {
+  demo.value = bookStore.GetSegmentChapters(e);
+  close();
 }
 </script>
 
@@ -84,13 +69,10 @@ function onChangeColla(index) {
   line-height: 40px;
   text-align: center;
   font-size: 16px;
-  color: #333;
-}
-.seg-popup {
-  height: 70%;
-  .chapters {
-    max-height: 300px;
-    overflow-y: scroll;
-  }
+  // color: #333;
+
+  // border-radius: 50px;
+  background: #ecf0f3;
+  box-shadow: inset 20px 20px 60px #c9cccf, inset -20px -20px 60px #ffffff;
 }
 </style>

@@ -17,7 +17,7 @@ export default defineConfig(({ mode, command }) => {
           target:
             VITE_APP_ENV === "production"
               ? "http://f.ldlv.cn:3000"
-              : "http://f.ldlv.cn:3000",
+              : "http://123.60.18.204:3000",
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/dev-api/, ""),
         },

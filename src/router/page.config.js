@@ -19,7 +19,7 @@ export default [
   },
   {
     name: "list",
-    path: "/msg/list/:id",
+    path: "/msg/list",
     component: () => import("@/views/book/list.vue"),
     meta: {
       title: "章节",
@@ -28,7 +28,7 @@ export default [
   },
   {
     name: "content",
-    path: "/msg/content/:id/:child_id",
+    path: "/msg/content",
     component: () => import("@/views/book/content.vue"),
     meta: {
       title: "",
