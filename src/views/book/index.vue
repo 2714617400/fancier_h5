@@ -1,47 +1,53 @@
 <template>
-  <div class="stack">
-    <div class="book" v-for="(v, i) in books" :key="i" @click="onClick(v)">
-      <div>
-        <p class="van-ellipsis title">{{ v.title }}</p>
+  <PullRefresh class="pull-refresh" v-model="isLoading" @refresh="onRefresh">
+    <div class="stack">
+      <div class="book" v-for="(v, i) in books" :key="i" @click="jump(v)">
+        <div>
+          <p class="van-ellipsis title">{{ v.title }}</p>
+        </div>
       </div>
     </div>
-  </div>
+  </PullRefresh>
 </template>
 
 <script setup name="Msg">
-import { reactive, ref } from "vue";
-import { Dialog, Image } from "vant";
+import { ref, computed, onMounted } from "vue";
+import { Dialog, PullRefresh } from "vant";
 import { useBookStore } from "@/stores/book";
 import { useRouter } from "vue-router";
-const router = useRouter();
-const bookStores = useBookStore();
+const bookStores = useBookStore(),
+  isLoading = ref(false);
 
-const books = ref([]);
+const books = computed(() => bookStores.books);
 
-bookStores.GetBooks().then((data) => {
-  books.value = data;
+onMounted(() => {
+  bookStores.GetBooks();
 });
 
-function onClick(item) {
-  console.log(item, "item");
+async function onRefresh() {
+  try {
+    bookStores.$reset();
+    await bookStores.GetBooks();
+  } catch (e) {
+    console.error('故事接口出事故了Σ(⊙▽⊙"a\n', e);
+    Dialog({ message: '故事接口出事故了Σ(⊙▽⊙"a' });
+  }
+  isLoading.value = false;
+}
+
+const router = useRouter();
+function jump(item) {
   bookStores.$patch({
     readBookId: item.id,
   });
   router.push({ name: "list" });
 }
-
-function onMsgClick(item) {
-  Dialog({ message: `${item.nickName}被点击！` });
-}
-function onMsgRemove(item) {
-  Dialog({ message: `${item.nickName}被移除！` });
-}
-function onBarClick(item) {
-  Dialog({ message: `${item.title}被点击！` });
-}
 </script>
 
 <style lang="scss" scope>
+.pull-refresh {
+  height: 100%;
+}
 .stack {
   min-height: calc(100% - 28px);
   padding: 14px;

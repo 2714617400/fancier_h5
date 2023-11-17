@@ -49,17 +49,19 @@ export const useBookStore = defineStore({
      * 获取故事列表
      * @returns {Array} 故事列表
      */
-    GetBooks: function () {
-      return new Promise((resolve, reject) => {
-        getStory()
-          .then((res) => {
-            this.books = res;
-            resolve(res);
-          })
-          .catch((error) => {
-            reject(error);
-          });
-      });
+    GetBooks: function (refresh = false) {
+      if (this.books.length && !refresh) return Promise.resolve(this.books);
+      else
+        return new Promise((resolve, reject) => {
+          getStory()
+            .then((res) => {
+              this.books = res;
+              resolve(res);
+            })
+            .catch((error) => {
+              reject(error);
+            });
+        });
     },
     /**
      * 获取章节列表,默认拉取全部章节

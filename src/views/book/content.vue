@@ -1,58 +1,66 @@
 <template>
-  <div class="page" ref="pageEl" @scroll="getScrollTop">
-    <Cell :title="chapter.title" center />
-    <div class="content" v-html="chapter.content"></div>
+  <div class="page" ref="pageEl">
+    <Sticky>
+      <NavBar
+        :title="chapter.title"
+        left-text="返回"
+        left-arrow
+        @click-left="onClickLeft"
+      />
+    </Sticky>
+    <!-- <Cell :title="chapter.title" center /> -->
+    <div class="content" :style="sty" v-html="chapter.content"></div>
     <div class="next" @click="next">下一章</div>
   </div>
 </template>
 
 <script setup name="List">
-import { ref, computed } from "vue";
-import { Cell } from "vant";
+import { ref, unref, computed } from "vue";
+import { Cell, Sticky, NavBar } from "vant";
 import { getChapterContent } from "@/api/book/index.js";
 import { useBookStore } from "@/stores/book";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
+const bookStore = useBookStore();
 const route = useRoute(),
   chapterID = route.params.child_id;
 
-const bookStore = useBookStore();
+const chapter = ref({
+  title: "",
+  content: "",
+});
 bookStore.GetContent(chapterID).then((data) => {
   chapter.value = data;
   chapter.value.content = data.content.split("\n").join("<br /><br />");
 });
-let chapter = ref({
-  title: "",
-  content: "",
+
+const stl = computed(() => {
+  return {
+    fontSize: "12px",
+    color: "#333",
+    backgroundColor: "#ecf0f3",
+  };
 });
 
-const pageEl = ref();
-function getScrollTop(e) {
-  console.log("getScrollTop", e);
+const router = useRouter();
+function onClickLeft() {
+  router.go(-1);
 }
-// async function getContent() {
-//   getChapterContent({
-//     id: storyID,
-//     child_id: chapterID,
-//   }).then(({ data }) => {
-//     chapter.value = data;
-//     chapter.value.content = data.content.split("\n").join("<br /><br />");
-//     console.log(data.content.split("\n"));
-//   });
-// }
-// getContent();
+
+const pageEl = ref();
 function next() {
   bookStore.GetNextContent().then((data) => {
     chapter.value = data;
     chapter.value.content = data.content.split("\n").join("<br /><br />");
-    console.log(pageEl, "pageEl");
-    window.scrollTop({ top: 0 });
+    unref(pageEl).scrollTop = 0;
   });
 }
 </script>
 
 <style lang="scss" scope>
 .page {
+  height: 100%;
   background-color: #e9faff;
+  overflow-y: scroll;
 }
 .content {
   white-space: pre-line;
@@ -62,8 +70,7 @@ function next() {
     FreeSans, Arimo, "Droid Sans", "wenquanyi micro hei", "Hiragino Sans GB",
     "Hiragino Sans GB W3", FontAwesome, sans-serif;
   font-weight: 400;
-  color: #333;
-  font-size: 12px;
+  // font-size: 12px;
   -webkit-font-smoothing: subpixel-antialiased;
 }
 .next {

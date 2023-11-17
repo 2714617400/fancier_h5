@@ -32,7 +32,7 @@ export default [
     component: () => import("@/views/book/content.vue"),
     meta: {
       title: "",
-      isNavBar: true,
+      isNavBar: false,
     },
   },
 ];
