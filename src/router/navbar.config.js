@@ -8,6 +8,15 @@ export default [
       icon: "chat-o",
     },
   },
+  {
+    name: "picture",
+    path: "/picture",
+    component: () => import("@/views/picture/index.vue"),
+    meta: {
+      title: "图库",
+      icon: "chat-o",
+    },
+  },
   // {
   //   name: "msg",
   //   path: "/msg",
