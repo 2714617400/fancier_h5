@@ -10,6 +10,7 @@
   "dependencies": {
     "amfe-flexible": "^2.2.1",
     "axios": "^0.26.1",
+    "mockjs": "^1.1.0",
     "pinia": "^2.0.13",
     "postcss-pxtorem": "^6.0.0",
     "vant": "^3.4.7",
@@ -22,6 +23,7 @@
     "sass-loader": "^12.6.0",
     "svg-sprite-loader": "^6.0.11",
     "vite": "^2.9.1",
+    "vite-plugin-mock": "^2.9.8",
     "vite-plugin-style-import": "1.4.1"
   }
 }

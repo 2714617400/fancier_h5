@@ -3,6 +3,7 @@ import styleImport, { VantResolve } from "vite-plugin-style-import";
 import { defineConfig, loadEnv } from "vite";
 import vue from "@vitejs/plugin-vue";
 import { svgBuilder } from "./src/plugins/svgBuilder";
+import { viteMockServe } from "vite-plugin-mock";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
@@ -29,6 +30,11 @@ export default defineConfig(({ mode, command }) => {
         resolves: [VantResolve()],
       }),
       svgBuilder("./src/assets/icons/svg/"),
+      viteMockServe({
+        mockPath: "mock",
+        localEnabled: true, // 开发打包开关 true时打开mock  false关闭mock
+        prodEnabled: false, //生产环境下为false，这样就不会被打包到生产包中
+      }),
     ],
     resolve: {
       alias: {

@@ -32,6 +32,21 @@ const handleClick = function () {
     defaultPic.value = pics[newIndex];
   }
 };
+
+async function init() {
+  let addressData = await getFetchData("https://ipapi.co/json/");
+
+  console.log("请求返回", await getFetchData());
+}
+function getFetchData(url) {
+  return new Promise((resolve, reject) => {
+    fetch(url)
+      .then((res) => res.json())
+      .then(resolve)
+      .catch(reject);
+  });
+}
+init();
 </script>
 <style lang="scss" scope>
 .page {

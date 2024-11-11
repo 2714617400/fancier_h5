@@ -15,6 +15,7 @@ import { ref, computed, onMounted } from "vue";
 import { Dialog, PullRefresh } from "vant";
 import { useBookStore } from "@/stores/book";
 import { useRouter } from "vue-router";
+import axios from "axios";
 const bookStores = useBookStore(),
   isLoading = ref(false);
 
@@ -22,6 +23,7 @@ const books = computed(() => bookStores.books);
 
 onMounted(() => {
   bookStores.GetBooks();
+  axios.post("/api/user/login", { username: "system", password: "123456" });
 });
 
 async function onRefresh() {
